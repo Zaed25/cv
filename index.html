@@ -1,0 +1,2059 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="referrer" content="strict-origin-when-cross-origin">
+    <title>Muhammad Zaid Al Nahhas - AI Developer</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet" />
+    <style>
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: #ffffff;
+            color: #111827;
+        }
+
+        .card {
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+                0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .tag {
+            background-color: #e5e7eb;
+            color: #374151;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .tag:hover {
+            background-color: #4b5563;
+            color: #ffffff;
+        }
+
+        .timeline::before {
+            content: "";
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #d1d5db;
+        }
+
+        .timeline-item-container {
+            position: relative;
+        }
+
+        .timeline-item-container:nth-child(odd) .timeline-content {
+            padding-right: 2rem;
+            text-align: right;
+        }
+
+        .timeline-item-container:nth-child(even) .timeline-content {
+            padding-left: 2rem;
+            text-align: left;
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 1rem;
+            left: 50%;
+            transform: translateX(-50%) scale(0);
+            width: 0.875rem;
+            height: 0.875rem;
+            border-radius: 9999px;
+            background-color: white;
+            border: 3px solid #4b5563;
+            transition: transform 0.4s ease 0.5s;
+            /* Delay dot animation */
+        }
+
+        /* Background Animation Container */
+        .background-animation {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+            /* MODIFIED: Hide by default, will be shown by JS for the hero section */
+            display: none;
+        }
+
+        /* MODIFIED: This class will be added by JS when the hero section is active */
+        body.section-hero-active .background-animation {
+            display: block;
+        }
+
+        .background-animation li {
+            position: absolute;
+            display: block;
+            list-style: none;
+            /* MODIFIED: Base styling for particles. Animation is now handled by JS. */
+            background: rgba(17, 24, 39, 0.05);
+            border-radius: 10%;
+            will-change: transform;
+            /* Performance hint for the browser */
+            /* MODIFIED: Set position to top/left 0, transform will handle placement */
+            top: 0;
+            left: 0;
+        }
+
+        /* MODIFIED: These rules now only set the size of the particles. */
+        .background-animation li:nth-child(1) {
+            width: 80px;
+            height: 80px;
+        }
+
+        .background-animation li:nth-child(2) {
+            width: 20px;
+            height: 20px;
+        }
+
+        .background-animation li:nth-child(3) {
+            width: 20px;
+            height: 20px;
+        }
+
+        .background-animation li:nth-child(4) {
+            width: 60px;
+            height: 60px;
+        }
+
+        .background-animation li:nth-child(5) {
+            width: 20px;
+            height: 20px;
+        }
+
+        .background-animation li:nth-child(6) {
+            width: 110px;
+            height: 110px;
+        }
+
+        .background-animation li:nth-child(7) {
+            width: 150px;
+            height: 150px;
+        }
+
+        .background-animation li:nth-child(8) {
+            width: 25px;
+            height: 25px;
+        }
+
+        .background-animation li:nth-child(9) {
+            width: 15px;
+            height: 15px;
+        }
+
+        .background-animation li:nth-child(10) {
+            width: 150px;
+            height: 150px;
+        }
+
+        /* Scroll-reveal Animation */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+            will-change: opacity, transform;
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-on-scroll.is-visible .timeline-dot {
+            transform: translateX(-50%) scale(1);
+        }
+
+        /* Project Details Animation */
+        .details-content {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out, opacity 0.4s ease-in-out;
+        }
+
+        .details-content.visible {
+            max-height: 800px;
+            /* Increased for gallery content */
+            opacity: 1;
+        }
+
+        /* Screenshot Gallery */
+        .screenshot-gallery {
+            display: flex;
+            gap: 0.75rem;
+            overflow-x: auto;
+            padding: 0.5rem 0;
+            scroll-behavior: smooth;
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 transparent;
+        }
+
+        .screenshot-gallery::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .screenshot-gallery::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .screenshot-gallery::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        .screenshot-gallery img {
+            height: 120px;
+            width: auto;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .screenshot-gallery img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Lightbox */
+        .lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            cursor: pointer;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 0.5rem;
+        }
+
+        /* Screenshot Modal */
+        .screenshot-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.92);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1050;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .screenshot-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .screenshot-modal-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: 90vw;
+            max-height: 90vh;
+        }
+
+        .screenshot-modal-container img {
+            max-width: 80vw;
+            max-height: 80vh;
+            border-radius: 0.5rem;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .screenshot-close {
+            position: absolute;
+            top: -50px;
+            right: 0;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 0.5rem;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .screenshot-close:hover {
+            opacity: 1;
+        }
+
+        .screenshot-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 50%;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        .screenshot-nav:hover {
+            opacity: 1;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .screenshot-prev {
+            left: -80px;
+        }
+
+        .screenshot-next {
+            right: -80px;
+        }
+
+        .screenshot-footer {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            color: white;
+            font-size: 0.875rem;
+        }
+
+        @media (max-width: 768px) {
+            .screenshot-prev {
+                left: 10px;
+            }
+
+            .screenshot-next {
+                right: 10px;
+            }
+
+            .screenshot-nav {
+                padding: 0.5rem;
+                opacity: 0.9;
+            }
+
+            .screenshot-footer {
+                bottom: -35px;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* File Viewer Modal */
+        .file-viewer-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1100;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .file-viewer-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .file-viewer-container {
+            background: white;
+            border-radius: 1rem;
+            width: 90%;
+            max-width: 1100px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .file-viewer-overlay.active .file-viewer-container {
+            transform: scale(1);
+        }
+
+        .file-viewer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+
+        .file-viewer-header h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 0;
+        }
+
+        .file-viewer-close {
+            width: 2.5rem;
+            height: 2.5rem;
+            border: none;
+            background: #f3f4f6;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s ease;
+        }
+
+        .file-viewer-close:hover {
+            background: #e5e7eb;
+        }
+
+        .file-tabs {
+            display: flex;
+            gap: 0.25rem;
+            padding: 0.75rem 1rem;
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            overflow-x: auto;
+        }
+
+        .file-tab {
+            padding: 0.5rem 1rem;
+            border: none;
+            background: transparent;
+            color: #6b7280;
+            font-size: 0.875rem;
+            font-weight: 500;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s ease;
+        }
+
+        .file-tab:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .file-tab.active {
+            background: #111827;
+            color: white;
+        }
+
+        .file-viewer-content {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .file-viewer-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .file-viewer-iframe.loaded {
+            opacity: 1;
+        }
+
+        /* Skeleton Loader */
+        .skeleton-loader {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #f9fafb;
+            display: flex;
+            flex-direction: column;
+            padding: 2rem;
+            gap: 1rem;
+            transition: opacity 0.3s ease;
+        }
+
+        .skeleton-loader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .skeleton-bar {
+            background: linear-gradient(90deg, #e5e7eb 25%, #f3f4f6 50%, #e5e7eb 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 0.375rem;
+        }
+
+        .skeleton-bar:nth-child(1) {
+            height: 1.5rem;
+            width: 60%;
+        }
+
+        .skeleton-bar:nth-child(2) {
+            height: 1rem;
+            width: 80%;
+        }
+
+        .skeleton-bar:nth-child(3) {
+            height: 1rem;
+            width: 70%;
+        }
+
+        .skeleton-bar:nth-child(4) {
+            height: 8rem;
+            width: 100%;
+        }
+
+        .skeleton-bar:nth-child(5) {
+            height: 1rem;
+            width: 90%;
+        }
+
+        .skeleton-bar:nth-child(6) {
+            height: 1rem;
+            width: 75%;
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -200% 0;
+            }
+
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        /* Profile Image */
+        .profile-image-container {
+            width: 209px;
+            /* Mobile width */
+            /* Removed fixed height to allow real image dimensions */
+            height: auto;
+            border-radius: 1rem;
+            /* UPDATED: Little rounded corners (was 20%) */
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            border: 4px solid white;
+            background: white;
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .profile-image-container:hover {
+            transform: scale(1.03);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .profile-image {
+            width: 100%;
+            height: auto;
+            /* UPDATED: Adjusts to actual image height */
+            display: block;
+            /* Removes bottom spacing */
+            object-fit: contain;
+            /* Shows full image */
+            filter: contrast(1.05);
+        }
+
+        @media (min-width: 768px) {
+            .profile-image-container {
+                width: 280px;
+                /* height: auto inherited - shows real dimensions */
+            }
+        }
+
+        /* View Files Button */
+        .view-files-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
+        }
+
+        .view-files-btn:hover {
+            background: #374151;
+            transform: translateY(-1px);
+        }
+
+        .view-files-btn svg {
+            width: 1rem;
+            height: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            .file-viewer-container {
+                width: 100%;
+                height: 100%;
+                border-radius: 0;
+            }
+
+            .file-tabs {
+                padding: 0.5rem;
+            }
+
+            .file-tab {
+                padding: 0.375rem 0.75rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .arrow-span {
+            display: inline-block;
+            transition: transform 0.4s ease;
+        }
+
+        .arrow-span.rotated {
+            transform: rotate(180deg);
+        }
+
+        @media (max-width: 768px) {
+            .timeline::before {
+                left: 0.4375rem;
+                transform: translateX(0);
+            }
+
+            .timeline-item-container:nth-child(odd) .timeline-content,
+            .timeline-item-container:nth-child(even) .timeline-content {
+                padding-left: 2rem;
+                padding-right: 0;
+                text-align: left;
+            }
+
+            .timeline-dot {
+                left: 0;
+            }
+
+            .reveal-on-scroll.is-visible .timeline-dot {
+                transform: translateX(0) scale(1);
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+    <ul class="background-animation">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <header id="header" class="bg-white/90 backdrop-blur-lg fixed top-0 left-0 right-0 z-50 border-b border-gray-200">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#hero" class="text-xl font-bold tracking-tight text-gray-900">Muhammad Zaid Al Nahhas</a>
+            <nav class="hidden md:flex space-x-8 text-sm font-medium text-gray-600">
+                <a href="#experience" class="hover:text-gray-900 transition-colors">Experience</a>
+                <a href="#projects" class="hover:text-gray-900 transition-colors">Projects</a>
+                <a href="#skills" class="hover:text-gray-900 transition-colors">Skills</a>
+                <a href="#education" class="hover:text-gray-900 transition-colors">Education</a>
+                <a href="#achievements" class="hover:text-gray-900 transition-colors">Achievements</a>
+                <a href="#contact" class="hover:text-gray-900 transition-colors">Contact</a>
+            </nav>
+            <button id="mobile-menu-button" class="md:hidden p-2 rounded-md focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+            </button>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200">
+            <a href="#experience" class="block py-3 px-6 text-sm hover:bg-gray-50">Experience</a>
+            <a href="#projects" class="block py-3 px-6 text-sm hover:bg-gray-50">Projects</a>
+            <a href="#skills" class="block py-3 px-6 text-sm hover:bg-gray-50">Skills</a>
+            <a href="#education" class="block py-3 px-6 text-sm hover:bg-gray-50">Education</a>
+            <a href="#achievements" class="block py-3 px-6 text-sm hover:bg-gray-50">Achievements</a>
+            <a href="#contact" class="block py-3 px-6 text-sm hover:bg-gray-50">Contact</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero" class="min-h-screen flex items-center pt-20 bg-transparent">
+            <div class="container mx-auto px-6 relative z-10">
+                <div class="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-16">
+                    <!-- Profile Image -->
+                    <div class="reveal-on-scroll flex-shrink-0">
+                        <div class="profile-image-container">
+                            <img src="assets/profile image/sketched-profile-image.jpg"
+                                alt="Muhammad Zaid Al Nahhas - Sketched Portrait" class="profile-image">
+                        </div>
+                    </div>
+                    <!-- Text Content -->
+                    <div class="text-center md:text-left max-w-2xl">
+                        <h1
+                            class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight reveal-on-scroll">
+                            AI Developer & Informatics Engineer
+                        </h1>
+                        <p class="mt-6 text-lg md:text-xl text-gray-600 reveal-on-scroll"
+                            style="transition-delay: 150ms">
+                            Informatics Engineering graduate (August 2025) specializing in
+                            Artificial Intelligence and Generative AI. Experienced in building
+                            LLM-powered applications, multi-agent systems, recommendation engines,
+                            and full-stack AI solutions.
+                        </p>
+                        <div class="mt-10 flex flex-wrap justify-center md:justify-start gap-4 reveal-on-scroll"
+                            style="transition-delay: 300ms">
+                            <a href="mailto:alnahhaszaed25@gmail.com"
+                                class="px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg shadow-md hover:bg-black transition-transform transform hover:scale-105">Contact
+                                Me</a>
+                            <a href="https://www.linkedin.com/in/mhd-zaid-al-nahhas" target="_blank"
+                                class="px-8 py-3 bg-white text-gray-900 font-semibold rounded-lg border border-gray-300 shadow-sm hover:bg-gray-50 transition-transform transform hover:scale-105">LinkedIn</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Professional Experience Section -->
+        <section id="experience" class="py-20 bg-gray-50 relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 reveal-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                        Professional Experience
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        Real-world AI engineering work.
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto reveal-on-scroll">
+                    <div class="card rounded-xl p-8 shadow-sm">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-4">
+                            <div>
+                                <h3 class="text-2xl font-bold text-gray-900">AI Engineering Intern</h3>
+                                <p class="text-lg text-gray-600">beno.com (UAE - Remote)</p>
+                            </div>
+                            <span class="tag text-sm font-semibold px-4 py-2 rounded-full mt-2 md:mt-0">Sep 2025 - Jan
+                                2026</span>
+                        </div>
+                        <div class="space-y-6">
+                            <!-- Project 1 -->
+                            <div class="border-l-4 border-gray-300 pl-4">
+                                <h4 class="font-bold text-gray-800 text-lg">Multi-Agent Marketing System</h4>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Python</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">AutoGen</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Gemini LLM</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Multi-Agent
+                                        Systems</span>
+                                </div>
+                                <ul class="mt-3 space-y-2 text-gray-600 text-sm list-disc list-inside">
+                                    <li>Engineered an autonomous AI system handling the full marketing lifecycle, from
+                                        strategic planning to asset production</li>
+                                    <li>Architected a multi-agent environment with specialized agents for debate and
+                                        cross-functional task execution</li>
+                                    <li>Implemented Planner/Renderer pattern for high-fidelity asset generation</li>
+                                </ul>
+                            </div>
+                            <!-- Project 2 -->
+                            <div class="border-l-4 border-gray-300 pl-4">
+                                <h4 class="font-bold text-gray-800 text-lg">Automated Lead Generation Pipeline</h4>
+                                <div class="mt-2 flex flex-wrap gap-2">
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">n8n</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Python</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">REST APIs</span>
+                                    <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Hub-and-Spoke</span>
+                                </div>
+                                <ul class="mt-3 space-y-2 text-gray-600 text-sm list-disc list-inside">
+                                    <li>Designed a platform-agnostic Hub-and-Spoke architecture for "plug-and-play"
+                                        social source integration</li>
+                                    <li>Built robust adapters for Reddit & X APIs to automate lead capture</li>
+                                    <li>Orchestrated complex workflows ensuring zero data loss</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="py-20 bg-white relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 reveal-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                        Academic & Personal Projects
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        A selection of my key academic and personal work.
+                    </p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:items-start">
+                    <div class="card rounded-xl p-8 shadow-sm reveal-on-scroll">
+                        <h3 class="text-2xl font-bold text-gray-900">
+                            TrustAsset: AI-Powered Marketplace
+                        </h3>
+                        <p class="mt-2 text-sm font-semibold text-gray-700">
+                            AI Developer - Recommendation Systems
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Python</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">TensorFlow</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Flask</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">FastAPI</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Docker</span>
+                        </div>
+                        <p class="mt-4 text-gray-600">
+                            Senior graduation project building recommendation systems for
+                            the digital marketplace for real estate and vehicles with
+                            multiple integrated AI systems.
+                        </p>
+                        <div class="mt-6">
+                            <button onclick="toggleDetails('trustasset-details', this)"
+                                class="font-semibold text-gray-800 hover:underline transition inline-flex items-center gap-1">
+                                <span class="button-text">View Details</span>
+                                <span class="arrow-span text-lg">&rarr;</span>
+                            </button>
+                            <div id="trustasset-details" class="details-content mt-4 pt-4 border-t border-gray-200">
+                                <ul class="space-y-3 text-sm text-gray-700 list-disc list-inside mb-4">
+                                    <li>
+                                        Designed a deep learning property recommendation engine
+                                        using an **Autoencoder** on 2.2M+ listings, achieving a
+                                        validation MSE of 0.0009.
+                                    </li>
+                                    <li>
+                                        Built a high-performance **FastAPI** service for property
+                                        recommendations using a pre-calculated similarity cache
+                                        for instant results.
+                                    </li>
+                                    <li>
+                                        Engineered a hybrid **vehicle recommendation system** to
+                                        solve the critical "cold start" problem.
+                                    </li>
+                                    <li>
+                                        Developed and deployed the vehicle model as a **Flask
+                                        RESTful API**, refactoring for a low-memory production
+                                        environment.
+                                    </li>
+                                    <li>
+                                        Code:
+                                        <a href="https://github.com/Zaed25/property-item-recommend" target="_blank"
+                                            class="underline text-gray-800 hover:text-black">Property RecSys</a>,
+                                        <a href="https://github.com/Zaed25/vehicle-item-recommend" target="_blank"
+                                            class="underline text-gray-800 hover:text-black">Vehicle RecSys</a>
+                                    </li>
+                                </ul>
+                                <button onclick="openFileViewer('trustasset')" class="view-files-btn">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    View Project Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card rounded-xl p-8 shadow-sm reveal-on-scroll" style="transition-delay: 150ms">
+                        <h3 class="text-2xl font-bold text-gray-900">
+                            SQLMentor: AI-Powered SQL Learning
+                        </h3>
+                        <p class="mt-2 text-sm font-semibold text-gray-700">
+                            Front-End Developer
+                        </p>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Next.js</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">React</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">TypeScript</span>
+                            <span class="tag text-xs font-semibold px-3 py-1 rounded-full">Tailwind CSS</span>
+                        </div>
+                        <p class="mt-4 text-gray-600">
+                            Junior project developing a responsive UI for an AI-powered SQL
+                            educational platform to simplify learning through gamification.
+                        </p>
+                        <div class="mt-6">
+                            <button onclick="toggleDetails('sqlmentor-details', this)"
+                                class="font-semibold text-gray-800 hover:underline transition inline-flex items-center gap-1">
+                                <span class="button-text">View Details</span>
+                                <span class="arrow-span text-lg">&rarr;</span>
+                            </button>
+                            <div id="sqlmentor-details" class="details-content mt-4 pt-4 border-t border-gray-200">
+                                <ul class="space-y-3 text-sm text-gray-700 list-disc list-inside mb-4">
+                                    <li>
+                                        Spearheaded front-end development using <strong>Next.js</strong>,
+                                        building the responsive UI for the platform.
+                                    </li>
+                                    <li>
+                                        Developed core <strong>learning pages</strong> with tabbed views for
+                                        theory and practice.
+                                    </li>
+                                    <li>
+                                        Engineered a <strong>community hub</strong> for users to share posts
+                                        and achievements.
+                                    </li>
+                                    <li>
+                                        Built a personalized <strong>user profile page</strong> to track
+                                        progress and manage information.
+                                    </li>
+                                    <li>
+                                        Code:
+                                        <a href="https://github.com/eyadai19/sql-m" target="_blank"
+                                            class="underline text-gray-800 hover:text-black">GitHub Link</a>
+                                    </li>
+                                </ul>
+                                <p class="text-xs text-gray-500 mb-2">Screenshots (click to enlarge):</p>
+                                <div class="screenshot-gallery">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/login page 1.png"
+                                        alt="Login Page" onclick="openScreenshotModal(0)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/learning page 1.png"
+                                        alt="Learning Page" onclick="openScreenshotModal(1)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/learning page 3.png"
+                                        alt="Learning Page Theory" onclick="openScreenshotModal(2)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/database compiler 1.png"
+                                        alt="Database Compiler" onclick="openScreenshotModal(3)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/community page .png"
+                                        alt="Community Page" onclick="openScreenshotModal(4)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/profile page 1.png"
+                                        alt="Profile Page" onclick="openScreenshotModal(5)">
+                                    <img src="assets/junior project - sql mentor/images/screen shots/chat bot 1.png"
+                                        alt="Chatbot" onclick="openScreenshotModal(6)">
+                                </div>
+                                <button onclick="openFileViewer('sqlmentor')" class="view-files-btn mt-3">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    View Project Files
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Course Projects Subsection -->
+                <div class="mt-16">
+                    <div class="text-center mb-8 reveal-on-scroll">
+                        <h3 class="text-2xl font-bold text-gray-800">Course Projects</h3>
+                        <p class="mt-2 text-gray-600">Practical coursework demonstrating foundational skills</p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <!-- Neural Network Project -->
+                        <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">Neural Networks & Price Prediction</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Python</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Keras</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">NumPy</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">Built feedforward neural networks from scratch using
+                                NumPy, and practical price prediction models using Keras.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('nn-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="nn-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>Implemented feedforward architecture manually to understand gradient
+                                            computation</li>
+                                        <li>Built property price prediction model achieving accurate regression results
+                                        </li>
+                                    </ul>
+                                    <button onclick="openFileViewer('neural-network')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DIP Project -->
+                        <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 100ms">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">Digital Image Processing</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">MATLAB</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">CV Algorithms</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">Implemented Otsu's thresholding and Canny edge
+                                detection algorithms from scratch in MATLAB.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('dip-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="dip-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>Manual implementation of classic computer vision algorithms</li>
+                                        <li>Understanding of image segmentation and edge detection fundamentals</li>
+                                    </ul>
+                                    <button onclick="openFileViewer('dip')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expert System Project -->
+                        <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 200ms">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">Expert System Design</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Knowledge
+                                    Engineering</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Rule-Based</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">Course project applying expert system methodology to a
+                                real-world domain, demonstrating knowledge-based reasoning.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('expert-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="expert-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>Selected a practical domain for expert system application</li>
+                                        <li>Developed rule engine with knowledge base and inference mechanism</li>
+                                    </ul>
+                                    <button onclick="openFileViewer('expert-system')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- VPN Project -->
+                        <!-- <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 300ms">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">VPN Technology</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Networking</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Security</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">Network Applications course presentation on VPN
+                                technologies, protocols, and security implementations.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('vpn-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="vpn-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>Selected topic for Network Applications Design course final project</li>
+                                        <li>Researched and presented VPN protocols, encryption, and use cases</li>
+                                    </ul>
+                                    <button onclick="openFileViewer('vpn')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div> -->
+
+                        <!-- Computer Vision Project -->
+                        <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 400ms">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">Computer Vision</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">TensorFlow</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">CNN</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Fashion-MNIST</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">Built a CNN classifier for Fashion-MNIST dataset
+                                achieving high accuracy on image classification.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('cv-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="cv-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>Implemented CNN architecture for image classification</li>
+                                        <li>Trained and evaluated on Fashion-MNIST benchmark</li>
+                                    </ul>
+                                    <button onclick="openFileViewer('computer-vision')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- KDD Project -->
+                        <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 500ms">
+                            <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mb-4">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                                </svg>
+                            </div>
+                            <h4 class="font-bold text-lg text-gray-900">Knowledge Discovery (KDD)</h4>
+                            <div class="mt-2 flex flex-wrap gap-2">
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Python</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Scikit-learn</span>
+                                <span class="tag text-xs font-semibold px-2 py-1 rounded-full">Data Mining</span>
+                            </div>
+                            <p class="mt-3 text-sm text-gray-600">DDoS attack detection using KNN, Decision Trees, and
+                                unsupervised learning techniques.</p>
+                            <div class="mt-4">
+                                <button onclick="toggleDetails('kdd-details', this)"
+                                    class="text-sm font-semibold text-gray-800 hover:underline inline-flex items-center gap-1">
+                                    <span class="button-text">View Details</span>
+                                    <span class="arrow-span">→</span>
+                                </button>
+                                <div id="kdd-details" class="details-content mt-3 pt-3 border-t border-gray-200">
+                                    <ul class="text-sm text-gray-700 space-y-2 list-disc list-inside mb-3">
+                                        <li>DDoS detection using KNN with custom encoders and scalers</li>
+                                        <li>Comparative analysis with Decision Trees classifier</li>
+                                        <li>Unsupervised clustering for anomaly detection</li>
+                                    </ul>
+                                    <button onclick="openFileViewer('kdd')" class="view-files-btn">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                        </svg>
+                                        View Files
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="skills" class="py-20 bg-gray-50 relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 reveal-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                        Technical Skills
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        My technical toolkit for building applications and models.
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto space-y-8">
+                    <div class="reveal-on-scroll">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                            AI & GenAI
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">TensorFlow</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Keras</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Scikit-learn</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Generative
+                                AI</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">LLMs</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">RAG</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Multi-Agent
+                                Systems</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">NLP</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Computer
+                                Vision</span>
+                            <span class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Hugging
+                                Face</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Recommender
+                                Systems</span>
+                        </div>
+                    </div>
+                    <div class="reveal-on-scroll" style="transition-delay: 150ms">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                            Web Technologies
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Next.js</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">React</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">FastAPI</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Flask</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Tailwind
+                                CSS</span>
+                            <span class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">REST
+                                APIs</span>
+                        </div>
+                    </div>
+                    <div class="reveal-on-scroll" style="transition-delay: 300ms">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                            Programming Languages
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Python</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">JavaScript</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">TypeScript</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">SQL</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">C++</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Java</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">C#</span>
+                        </div>
+                    </div>
+                    <div class="reveal-on-scroll" style="transition-delay: 450ms">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">
+                            Tools & MLOps
+                        </h3>
+                        <div class="flex flex-wrap gap-3">
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Docker</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Git</span>
+                            <span class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">GitHub
+                                Actions</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">ChromaDB</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">n8n</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">AutoGen</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">Pandas</span>
+                            <span
+                                class="bg-gray-200 text-gray-800 text-sm font-medium px-4 py-2 rounded-lg tag">NumPy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="py-20 bg-white relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16 reveal-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                        Education
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">My academic background.</p>
+                </div>
+                <div class="relative max-w-2xl mx-auto timeline">
+                    <div class="timeline-item-container mb-8 flex md:justify-start reveal-on-scroll">
+                        <div class="timeline-dot"></div>
+                        <div class="md:w-1/2 timeline-content">
+                            <div class="card rounded-xl p-6 shadow-sm">
+                                <p class="text-sm font-semibold text-gray-700">
+                                    2021 – Aug 2025
+                                </p>
+                                <h4 class="font-bold text-lg mt-1">
+                                    B.S. in Informatics Engineering, AI
+                                </h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Arab International University (AIU)
+                                </p>
+                                <p class="text-xs text-gray-500 mt-2">GPA: 3.06 / 4.00</p>
+                                <div class="mt-3 text-xs text-gray-600 space-y-1">
+                                    <p><strong>Accelerated Track:</strong> Completed 5-year curriculum in 4 years using
+                                        summer semesters.</p>
+                                    <p><strong>Relevant Coursework:</strong> ML, Deep Learning, Computer Vision, DB
+                                        Systems.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item-container mb-8 flex md:justify-end reveal-on-scroll">
+                        <div class="timeline-dot"></div>
+                        <div class="md:w-1/2 timeline-content">
+                            <div class="card rounded-xl p-6 shadow-sm">
+                                <p class="text-sm font-semibold text-gray-700">
+                                    2021 – Present
+                                </p>
+                                <h4 class="font-bold text-lg mt-1">
+                                    B.S. in Information Technology Engineering
+                                </h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    Syrian Virtual University (SVU)
+                                </p>
+                                <div class="mt-3 text-xs text-gray-600 space-y-1">
+                                    <p><strong>Concurrent Enrollment:</strong> Pursuing alongside AIU to broaden
+                                        technical foundations.</p>
+                                    <p><strong>Status:</strong> Currently in the 3rd year.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="timeline-item-container mb-8 flex md:justify-start reveal-on-scroll">
+                        <div class="timeline-dot"></div>
+                        <div class="md:w-1/2 timeline-content">
+                            <div class="card rounded-xl p-6 shadow-sm">
+                                <p class="text-sm font-semibold text-gray-700">
+                                    2023 – Present
+                                </p>
+                                <h4 class="font-bold text-lg mt-1">
+                                    B.S. in Business Administration
+                                </h4>
+                                <p class="text-sm text-gray-600 mt-1">
+                                    University of the People (UoPeople)
+                                </p>
+                                <div class="mt-3 text-xs text-gray-600 space-y-1">
+                                    <p><strong>Concurrent Enrollment:</strong> Bridging gap between engineering and
+                                        commercial strategy.</p>
+                                    <p><strong>Status:</strong> Completed 70/120 credits.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- YouTube Video Section -->
+                <div class="mt-16 max-w-3xl mx-auto reveal-on-scroll">
+                    <div class="text-center mb-6">
+                        <h3 class="text-xl font-bold text-gray-800">Teaching Demo</h3>
+                        <p class="mt-2 text-gray-600 text-sm">Explaining fundamental concepts in Neural Networks</p>
+                    </div>
+                    <div class="aspect-video rounded-xl overflow-hidden shadow-lg">
+                        <iframe width="100%" height="100%" src="https://www.youtube.com/embed/flNoqo6QK6c"
+                            title="NN: Building a feedforward model using NumPy & Keras" frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p class="text-center text-xs text-gray-500 mt-3">
+                        <a href="https://youtu.be/flNoqo6QK6c" target="_blank" class="hover:underline">Watch on YouTube:
+                            NN - Building a feedforward model using NumPy & Keras →</a>
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section id="achievements" class="py-20 bg-gray-50 relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12 reveal-on-scroll">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-900">
+                        Certifications & Achievements
+                    </h2>
+                    <p class="mt-4 text-lg text-gray-600">
+                        Recognitions and certifications I've earned.
+                    </p>
+                </div>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll">
+                        <h4 class="font-bold text-lg text-gray-800">
+                            Meta Front-End Developer Certificate
+                        </h4>
+                        <p class="text-sm text-gray-600 mt-1">Coursera (In Progress)</p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Completed 6 of 9 courses, including Advanced React.
+                        </p>
+                    </div>
+                    <div class="card rounded-xl p-6 shadow-sm reveal-on-scroll" style="transition-delay: 150ms">
+                        <h4 class="font-bold text-lg text-gray-800">
+                            Undergraduate Certificate in Marketing
+                        </h4>
+                        <p class="text-sm text-gray-600 mt-1">
+                            University of the People (Expected April 2025)
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Successful completion of all requirements.
+                        </p>
+                    </div>
+                    <div class="card rounded-xl p-6 md:col-span-2 shadow-sm reveal-on-scroll">
+                        <h4 class="font-bold text-lg text-gray-800">
+                            Front-End Development Track Completion
+                        </h4>
+                        <p class="text-sm text-gray-600 mt-1">
+                            One Million Arab Coders & Udacity (2020)
+                        </p>
+                        <p class="text-xs text-gray-500 mt-2">
+                            Selected for and completed the competitive front-end track.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CV Download Section -->
+        <section class="py-16 bg-white relative z-10">
+            <div class="container mx-auto px-6 text-center reveal-on-scroll">
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-900">Get My Resume</h2>
+                <p class="mt-3 text-gray-600">Download the full CV for a detailed overview of my experience and skills.
+                </p>
+                <a href="assets/MHD Zaid Al Nahhas - CV.pdf" target="_blank" download
+                    class="inline-flex items-center gap-2 mt-6 px-8 py-3 bg-gray-900 text-white font-semibold rounded-lg shadow-md hover:bg-black transition-transform transform hover:scale-105">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                    </svg>
+                    Download CV
+                </a>
+            </div>
+        </section>
+
+        <footer id="contact" class="bg-gray-900 text-white relative z-10">
+            <div class="container mx-auto px-6 py-12 text-center reveal-on-scroll">
+                <h2 class="text-3xl font-bold">Let's Connect</h2>
+                <p class="mt-4 max-w-2xl mx-auto text-gray-300 text-sm leading-relaxed">
+                    Versatile engineer building robust, scalable software. Full-stack development,
+                    AI integration, process automation, and clean architecture for long-term success.
+                </p>
+                <div class="mt-8">
+                    <a href="mailto:alnahhaszaed25@gmail.com"
+                        class="text-xl font-medium text-gray-100 hover:underline">alnahhaszaed25@gmail.com</a>
+                    <div class="mt-6 flex justify-center space-x-6">
+                        <a href="https://www.linkedin.com/in/mhd-zaid-al-nahhas" target="_blank"
+                            class="text-gray-400 hover:text-white transition">LinkedIn</a>
+                        <a href="https://github.com/Zaed25" target="_blank"
+                            class="text-gray-400 hover:text-white transition">GitHub</a>
+                    </div>
+                </div>
+                <div class="mt-10 pt-6 border-t border-gray-700 text-sm text-gray-500">
+                    <p>&copy; 2026 Muhammad Zaid Al Nahhas. All Rights Reserved.</p>
+                </div>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Lightbox for image gallery -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <img id="lightbox-img" src="" alt="Enlarged screenshot">
+    </div>
+
+    <!-- Screenshot Modal with Navigation -->
+    <div id="screenshot-modal" class="screenshot-modal-overlay" onclick="closeScreenshotModal()">
+        <div class="screenshot-modal-container" onclick="event.stopPropagation()">
+            <button class="screenshot-close" onclick="closeScreenshotModal()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <button class="screenshot-nav screenshot-prev" onclick="event.stopPropagation(); navigateScreenshot(-1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <img id="screenshot-modal-img" src="" alt="Screenshot">
+            <button class="screenshot-nav screenshot-next" onclick="event.stopPropagation(); navigateScreenshot(1)">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            <div class="screenshot-footer">
+                <span id="screenshot-modal-caption"></span>
+                <span id="screenshot-counter"></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- File Viewer Modal -->
+    <div id="file-viewer-modal" class="file-viewer-overlay" onclick="handleOverlayClick(event)">
+        <div class="file-viewer-container" onclick="event.stopPropagation()">
+            <div class="file-viewer-header">
+                <h3 id="file-viewer-title">Project Files</h3>
+                <button class="file-viewer-close" onclick="closeFileViewer()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+            <div id="file-tabs" class="file-tabs"></div>
+            <div class="file-viewer-content">
+                <div id="skeleton-loader" class="skeleton-loader">
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                    <div class="skeleton-bar"></div>
+                </div>
+                <iframe id="file-viewer-iframe" class="file-viewer-iframe" onload="handleIframeLoad()"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Project Files Data
+        const projectFiles = {
+            'trustasset': {
+                title: 'TrustAsset - Senior Project',
+                files: [
+                    { name: 'Final Report', path: 'assets/senior project - trust asset /Senior Report - TrustAsset.pdf', type: 'pdf' },
+                    { name: 'Final Presentation', path: 'assets/senior project - trust asset /TrustAsset recommendation final Presentation.pdf', type: 'pdf' },
+                    { name: 'Property Recommender', path: 'assets/senior project - trust asset /Trust Asset property recommender presentation.pdf', type: 'pdf' },
+                    { name: 'Property System (Notebook)', path: 'assets/senior project - trust asset /property_recommender_system.html', type: 'html' },
+                    { name: 'Vehicle System (Notebook)', path: 'assets/senior project - trust asset /vehcile_recommendation_system.html', type: 'html' }
+                ]
+            },
+            'sqlmentor': {
+                title: 'SQLMentor - Junior Project',
+                files: [
+                    { name: 'Final Report', path: 'assets/junior project - sql mentor/Final Junior Report.pdf', type: 'pdf' },
+                    { name: 'Presentation', path: 'assets/junior project - sql mentor/junior presentation.pdf', type: 'pdf' }
+                ]
+            },
+            'neural-network': {
+                title: 'Neural Networks & Price Prediction',
+                files: [
+                    { name: 'Price Prediction (Keras)', path: 'assets/neural network/price prediction using keras.pdf', type: 'pdf' },
+                    { name: 'Property Recommender', path: 'assets/neural network/Trust Asset property recommender presentation.pdf', type: 'pdf' }
+                ]
+            },
+            'dip': {
+                title: 'Digital Image Processing',
+                files: [
+                    { name: 'Otsu & Canny Implementation', path: 'assets/dip/Otsu_Canny_MATLAB_Implementation.pdf', type: 'pdf' }
+                ]
+            },
+            'expert-system': {
+                title: 'Expert System Design',
+                files: [
+                    { name: 'Expert System Project (Arabic)', path: 'assets/expert system/مشروع مقرر النظم الخبيرة.pdf', type: 'pdf' }
+                ]
+            },
+            // 'vpn': {
+            //     title: 'VPN Technology',
+            //     files: [
+            //         { name: 'VPN Presentation', path: 'assets/networks applications design, VPN presentaion project/VPN.pptx', type: 'pptx', downloadOnly: true }
+            //     ]
+            // },
+            'computer-vision': {
+                title: 'Computer Vision',
+                files: [
+                    { name: 'Fashion-MNIST Classifier', path: 'assets/computer vision/Fashion-MNIST Classifier.pdf', type: 'pdf' },
+                    { name: 'Presentation', path: 'assets/computer vision/presentaion.pdf', type: 'pdf' }
+                ]
+            },
+            'kdd': {
+                title: 'Knowledge Discovery (KDD)',
+                files: [
+                    { name: 'DDoS Detection - KNN', path: 'assets/knowledge discovery (kdd)/vertopal.com_ddos-detection-knn-encoders-scalers-final/41e9ba6e7c2c4e359fde8d20979a2c28.html', type: 'html' },
+                    { name: 'DDoS - Decision Trees', path: 'assets/knowledge discovery (kdd)/vertopal.com_ddos_detection_knn_decision_trees (2)/3f69ce0113d943668696a29b54475ef9.html', type: 'html' },
+                    { name: 'Unsupervised KDD', path: 'assets/knowledge discovery (kdd)/vertopal.com_unsupervised_kdd_HM_202111406/52a2cd2607a642e79a5fb644354cf85f.html', type: 'html' }
+                ]
+            }
+        };
+
+        let currentProject = null;
+        let currentFileIndex = 0;
+
+        function openFileViewer(projectId) {
+            const project = projectFiles[projectId];
+            if (!project) return;
+
+            currentProject = project;
+            currentFileIndex = 0;
+
+            // Set title
+            document.getElementById('file-viewer-title').textContent = project.title;
+
+            // Build tabs
+            const tabsContainer = document.getElementById('file-tabs');
+            tabsContainer.innerHTML = project.files.map((file, index) => `
+                <button class="file-tab ${index === 0 ? 'active' : ''}" onclick="switchTab(${index})">
+                    ${file.name}
+                    ${file.downloadOnly ? '<span style="font-size:0.7rem; margin-left:4px;">⬇</span>' : ''}
+                </button>
+            `).join('');
+
+            // Load first file
+            loadFile(0);
+
+            // Show modal
+            document.getElementById('file-viewer-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function switchTab(index) {
+            currentFileIndex = index;
+
+            // Update tab styles
+            document.querySelectorAll('.file-tab').forEach((tab, i) => {
+                tab.classList.toggle('active', i === index);
+            });
+
+            loadFile(index);
+        }
+
+        function loadFile(index) {
+            const file = currentProject.files[index];
+            const iframe = document.getElementById('file-viewer-iframe');
+            const skeleton = document.getElementById('skeleton-loader');
+
+            // Show skeleton, hide iframe
+            skeleton.classList.remove('hidden');
+            iframe.classList.remove('loaded');
+
+            if (file.downloadOnly) {
+                // For download-only files, show a download prompt
+                iframe.srcdoc = `
+                    <html>
+                    <head><style>
+                        body { 
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+                            display: flex; flex-direction: column; align-items: center; justify-content: center;
+                            height: 100vh; margin: 0; background: #f9fafb; color: #374151; text-align: center;
+                        }
+                        .icon { font-size: 4rem; margin-bottom: 1rem; }
+                        h2 { margin: 0 0 0.5rem; font-size: 1.5rem; }
+                        p { margin: 0 0 1.5rem; color: #6b7280; }
+                        a { 
+                            display: inline-flex; align-items: center; gap: 0.5rem;
+                            padding: 0.75rem 1.5rem; background: #111827; color: white;
+                            text-decoration: none; border-radius: 0.5rem; font-weight: 500;
+                        }
+                        a:hover { background: #374151; }
+                    </style></head>
+                    <body>
+                        <div class="icon">📊</div>
+                        <h2>${file.name}</h2>
+                        <p>This file type cannot be previewed in the browser.</p>
+                        <a href="../${file.path}" download>
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                            </svg>
+                            Download File
+                        </a>
+                    </body>
+                    </html>
+                `;
+                setTimeout(() => handleIframeLoad(), 100);
+            } else {
+                iframe.src = file.path;
+            }
+        }
+
+        function handleIframeLoad() {
+            document.getElementById('skeleton-loader').classList.add('hidden');
+            document.getElementById('file-viewer-iframe').classList.add('loaded');
+        }
+
+        function closeFileViewer() {
+            document.getElementById('file-viewer-modal').classList.remove('active');
+            document.body.style.overflow = '';
+
+            // Clear iframe after animation
+            setTimeout(() => {
+                document.getElementById('file-viewer-iframe').src = '';
+            }, 300);
+        }
+
+        function handleOverlayClick(event) {
+            if (event.target === document.getElementById('file-viewer-modal')) {
+                closeFileViewer();
+            }
+        }
+
+        // ESC key to close
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                if (document.getElementById('file-viewer-modal').classList.contains('active')) {
+                    closeFileViewer();
+                } else if (document.getElementById('screenshot-modal').classList.contains('active')) {
+                    closeScreenshotModal();
+                } else if (document.getElementById('lightbox').classList.contains('active')) {
+                    closeLightbox();
+                }
+            }
+            // Arrow key navigation for screenshot modal
+            if (document.getElementById('screenshot-modal').classList.contains('active')) {
+                if (e.key === 'ArrowLeft') navigateScreenshot(-1);
+                if (e.key === 'ArrowRight') navigateScreenshot(1);
+            }
+        });
+
+        // Screenshot Modal System
+        const screenshots = [
+            { src: 'assets/junior project - sql mentor/images/screen shots/login page 1.png', alt: 'Login Page' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/learning page 1.png', alt: 'Learning Page' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/learning page 3.png', alt: 'Learning Page Theory' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/database compiler 1.png', alt: 'Database Compiler' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/community page .png', alt: 'Community Page' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/profile page 1.png', alt: 'Profile Page' },
+            { src: 'assets/junior project - sql mentor/images/screen shots/chat bot 1.png', alt: 'Chatbot' }
+        ];
+        let currentScreenshotIndex = 0;
+
+        function openScreenshotModal(index) {
+            currentScreenshotIndex = index;
+            updateScreenshotModal();
+            document.getElementById('screenshot-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeScreenshotModal() {
+            document.getElementById('screenshot-modal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function navigateScreenshot(direction) {
+            currentScreenshotIndex = (currentScreenshotIndex + direction + screenshots.length) % screenshots.length;
+            updateScreenshotModal();
+        }
+
+        function updateScreenshotModal() {
+            const img = document.getElementById('screenshot-modal-img');
+            const caption = document.getElementById('screenshot-modal-caption');
+            const counter = document.getElementById('screenshot-counter');
+            img.src = screenshots[currentScreenshotIndex].src;
+            caption.textContent = screenshots[currentScreenshotIndex].alt;
+            counter.textContent = `${currentScreenshotIndex + 1} / ${screenshots.length}`;
+        }
+
+        // Lightbox functions (backup)
+        function openLightbox(src) {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.getElementById('lightbox-img');
+            lightboxImg.src = src;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.getElementById('lightbox').classList.remove('active');
+        }
+
+        // JAVASCRIPT for toggling details
+        function toggleDetails(id, buttonElement) {
+            const targetElement = document.getElementById(id);
+            const isOpening = !targetElement.classList.contains("visible");
+
+            // Close all other open details sections first
+            document
+                .querySelectorAll(".details-content.visible")
+                .forEach((openElement) => {
+                    if (openElement.id !== id) {
+                        openElement.classList.remove("visible");
+                        // Find the corresponding button and reset it
+                        const otherButton = document.querySelector(
+                            `button[onclick*="'${openElement.id}'"]`
+                        );
+                        if (otherButton) {
+                            otherButton.querySelector(".button-text").textContent =
+                                "View Details";
+                            const arrowSpan = otherButton.querySelector(".arrow-span");
+                            arrowSpan.classList.remove("rotated");
+                            arrowSpan.innerHTML = "&rarr;";
+                        }
+                    }
+                });
+
+            // Now, toggle the target element
+            const buttonText = buttonElement.querySelector(".button-text");
+            const arrowSpan = buttonElement.querySelector(".arrow-span");
+
+            if (isOpening) {
+                targetElement.classList.add("visible");
+                arrowSpan.classList.add("rotated");
+                buttonText.textContent = "Hide Details";
+                arrowSpan.innerHTML = "&uarr;"; // Up arrow
+            } else {
+                targetElement.classList.remove("visible");
+                arrowSpan.classList.remove("rotated");
+                buttonText.textContent = "View Details";
+                arrowSpan.innerHTML = "&rarr;"; // Right arrow
+            }
+        }
+
+        // Mobile menu toggle functionality
+        const mobileMenuButton = document.getElementById("mobile-menu-button");
+        const mobileMenu = document.getElementById("mobile-menu");
+
+        if (mobileMenuButton && mobileMenu) {
+            mobileMenuButton.addEventListener("click", () => {
+                mobileMenu.classList.toggle("hidden");
+            });
+        }
+
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll("#mobile-menu a").forEach((link) => {
+            link.addEventListener("click", () => {
+                if (mobileMenu) {
+                    mobileMenu.classList.add("hidden");
+                }
+            });
+        });
+
+        // Combined logic for all scroll-based animations
+        document.addEventListener("DOMContentLoaded", () => {
+            const body = document.body;
+
+            // --- Observer for revealing elements on scroll ---
+            const revealObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                        }
+                    });
+                },
+                {
+                    threshold: 0.1,
+                }
+            );
+            const elementsToAnimate =
+                document.querySelectorAll(".reveal-on-scroll");
+            elementsToAnimate.forEach((el) => revealObserver.observe(el));
+
+            // --- NEW: Interactive Particle Animation for Hero Section ---
+            const particlesContainer = document.querySelector(
+                ".background-animation"
+            );
+            const particleElements = Array.from(
+                particlesContainer.querySelectorAll("li")
+            );
+            const particles = [];
+            let mouse = { x: null, y: null };
+            let animationFrameId = null;
+
+            function initParticles() {
+                particles.length = 0; // Clear existing particles
+                particleElements.forEach((el) => {
+                    const size = parseFloat(getComputedStyle(el).width);
+                    particles.push({
+                        el: el,
+                        // Start particle at a random x, and below the viewport
+                        x: Math.random() * window.innerWidth,
+                        y: window.innerHeight + Math.random() * window.innerHeight,
+                        size: size,
+                        speedY: 0.5 + Math.random(), // Slower, more gentle speed
+                        rotation: Math.random() * 360,
+                        rotationSpeed: (Math.random() - 0.5) * 0.5,
+                        vx: 0,
+                        vy: 0,
+                    });
+                });
+            }
+
+            function animateParticles() {
+                const repelRadius = 150;
+                const maxForce = 3;
+
+                particles.forEach((p) => {
+                    // Reset base velocity
+                    let targetVy = -p.speedY;
+
+                    // Mouse interaction
+                    if (mouse.x !== null) {
+                        const dx = p.x - mouse.x;
+                        const dy = p.y - mouse.y;
+                        const distance = Math.sqrt(dx * dx + dy * dy);
+
+                        if (distance < repelRadius) {
+                            const forceDirectionX = dx / distance;
+                            const forceDirectionY = dy / distance;
+                            const force =
+                                ((repelRadius - distance) / repelRadius) * maxForce;
+                            p.vx += forceDirectionX * force;
+                            targetVy += forceDirectionY * force;
+                        }
+                    }
+
+                    p.x += p.vx;
+                    p.y += targetVy;
+                    p.vx *= 0.95;
+
+                    p.rotation += p.rotationSpeed;
+
+                    if (p.y < -p.size) {
+                        p.y = window.innerHeight + p.size;
+                        p.x = Math.random() * window.innerWidth;
+                        p.vx = 0;
+                    }
+                    p.el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0) rotate(${p.rotation}deg)`;
+                });
+
+                animationFrameId = requestAnimationFrame(animateParticles);
+            }
+
+            window.addEventListener("mousemove", (e) => {
+                mouse.x = e.clientX;
+                mouse.y = e.clientY;
+            });
+
+            window.addEventListener("mouseout", () => {
+                mouse.x = null;
+                mouse.y = null;
+            });
+
+            window.addEventListener("mousedown", (e) => {
+                if (!document.body.classList.contains("section-hero-active")) return;
+
+                const clickRadius = 120;
+                const clickForce = 10;
+
+                particles.forEach((p) => {
+                    const dx = p.x - e.clientX;
+                    const dy = p.y - e.clientY;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < clickRadius) {
+                        p.vx +=
+                            (dx / distance) *
+                            clickForce *
+                            ((clickRadius - distance) / clickRadius);
+                        p.vy +=
+                            (dy / distance) *
+                            clickForce *
+                            ((clickRadius - distance) / clickRadius);
+                    }
+                });
+            });
+
+            const sections = document.querySelectorAll(
+                "main > section, footer#contact"
+            );
+            let activeSection = "";
+
+            const sectionObserver = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            const newActiveSection = entry.target.id;
+                            if (newActiveSection !== activeSection) {
+                                if (activeSection) {
+                                    body.classList.remove(`section-${activeSection}-active`);
+                                }
+                                body.classList.add(`section-${newActiveSection}-active`);
+                                activeSection = newActiveSection;
+
+                                if (activeSection === "hero") {
+                                    if (!animationFrameId) {
+                                        initParticles();
+                                        animateParticles();
+                                    }
+                                } else {
+                                    if (animationFrameId) {
+                                        cancelAnimationFrame(animationFrameId);
+                                        animationFrameId = null;
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                {
+                    rootMargin: "-45% 0px -45% 0px",
+                    threshold: 0,
+                }
+            );
+
+            sections.forEach((section) => {
+                if (section) {
+                    sectionObserver.observe(section);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
